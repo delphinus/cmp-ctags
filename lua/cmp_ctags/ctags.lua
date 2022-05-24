@@ -11,7 +11,22 @@ Ctags.new = function(config)
 end
 
 function Ctags:is_available()
-  return self.searched and self.has_valid_executable
+  if self.searched then
+    return self.has_valid_executable
+  end
+  return true
+end
+
+function Ctags:search_executable()
+  local p = Process.new("ctags", { "--help" })
+  p:run(function(result)
+    self.searched = true
+    self.has_valid_executable = result.is_successful
+        and result.stdout:match [[^Universal Ctags]]
+        and result.stdout:match [[%-%-output%-format=.*json]]
+        and true
+        or false
+  end)
 end
 
 function Ctags:get_completion_items(filename, cwd, callback)
@@ -34,10 +49,15 @@ function Ctags:get_completion_items(filename, cwd, callback)
 end
 
 function Ctags:complete(filename, cwd, callback)
-  if self:is_available() then
-    self:get_completion_items(filename, cwd, callback)
+  if self.searched then
+    if self:is_available() then
+      self:get_completion_items(filename, cwd, callback)
+    else
+      callback(nil)
+    end
   else
     callback(nil)
+    self:search_executable()
   end
 end
 
