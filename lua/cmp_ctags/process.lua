@@ -56,7 +56,7 @@ function Process:run(callback)
     }
   end)
   if not handle then
-    debug.log(("start `%s` failed: pid = %d"):format(self.cmd, pid))
+    debug.log { message = "process cannot spawn", cmd = self.cmd, args = self.args, pid = pid }
   else
     self.stdout:read_start()
     self.stderr:read_start()
