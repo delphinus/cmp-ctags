@@ -4,6 +4,7 @@ local Ctags = {}
 
 Ctags.new = function(config)
   local self = setmetatable({}, { __index = Ctags })
+  self.executable = config.executable or "ctags"
   -- These flags will be updated asynchronously.
   self.searched = false
   self.has_valid_executable = false
@@ -18,7 +19,7 @@ function Ctags:is_available()
 end
 
 function Ctags:search_executable()
-  local p = Process.new("ctags", { "--help" })
+  local p = Process.new(self.executable, { "--help" })
   p:run(function(result)
     self.searched = true
     self.has_valid_executable = result.is_successful
@@ -31,7 +32,7 @@ end
 
 function Ctags:get_completion_items(filename, cwd, callback)
   local p = Process.new(
-    "ctags",
+    self.executable,
     { "--output-format=json", "--fields={name}{kind}{scope}{scopeKind}", filename },
     { cwd = cwd }
   )
