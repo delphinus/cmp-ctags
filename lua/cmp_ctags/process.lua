@@ -38,8 +38,8 @@ Process.new = function(cmd, args, options)
 end
 
 function Process:run(callback)
-  local handle, pid
-  handle, pid = uv.spawn(self.cmd, {
+  local handle, err
+  handle, err = uv.spawn(self.cmd, {
     args = self.args,
     cwd = self.cwd,
     stdio = { self.stdin.pipe, self.stdout.pipe, self.stderr.pipe },
@@ -55,7 +55,7 @@ function Process:run(callback)
   end)
   if not handle then
     self:pipe_close()
-    debug.log { message = "process cannot spawn", cmd = self.cmd, args = self.args, pid = pid }
+    debug.log { message = "process cannot spawn", cmd = self.cmd, args = self.args, err = err }
   else
     self.stdout:read_start()
     self.stderr:read_start()
