@@ -44,9 +44,7 @@ function Process:run(callback)
     cwd = self.cwd,
     stdio = { self.stdin.pipe, self.stdout.pipe, self.stderr.pipe },
   }, function(code, _)
-    self.stdin:close()
-    self.stdout:close()
-    self.stderr:close()
+    self:pipe_close()
     handle:close()
     callback {
       is_successful = code == 0,
@@ -56,11 +54,18 @@ function Process:run(callback)
     }
   end)
   if not handle then
+    self:pipe_close()
     debug.log { message = "process cannot spawn", cmd = self.cmd, args = self.args, pid = pid }
   else
     self.stdout:read_start()
     self.stderr:read_start()
   end
+end
+
+function Process:pipe_close()
+    self.stdin:close()
+    self.stdout:close()
+    self.stderr:close()
 end
 
 return Process
