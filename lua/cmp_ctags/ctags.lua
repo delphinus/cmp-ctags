@@ -2,9 +2,9 @@ local debug = require "cmp.utils.debug"
 local Process = require "cmp_ctags.process"
 local Ctags = {}
 
-Ctags.new = function(config)
+Ctags.new = function(executable)
   local self = setmetatable({}, { __index = Ctags })
-  self.executable = config.executable or "ctags"
+  self.executable = executable
   -- These flags will be updated asynchronously.
   self.searched = false
   self.has_valid_executable = false
@@ -29,7 +29,7 @@ function Ctags:search_executable()
         and result.stdout:match [[^Universal Ctags]]
         and result.stdout:match [[%-%-output%-format=.*json]]
         and true
-        or false
+      or false
   end)
 end
 
