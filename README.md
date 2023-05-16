@@ -34,3 +34,53 @@ use {
 ```
 
 Or you can use any plugin manager.
+
+## Configuration
+
+You can set options for this source in calling `cmp.setup`.
+
+```lua
+require("cmp").setup {
+  sources = {
+    {
+      name = "ctags",
+      -- default values
+      option = {
+        executable = "ctags",
+        trigger_characters = { "." },
+        trigger_characters_ft = {},
+      },
+    },
+  },
+}
+```
+
+### `executable`
+
+* Type: `string`
+* Default: `"ctags"`
+
+A custom path for Universal Ctags' executable.
+
+### `trigger_characters`
+
+* Type: `string[]`
+* Default: `{ "." }`
+
+Characters to start completions.
+
+### `trigger_characters_ft`
+
+* Type: `Table<string, string[]>`
+* Default: `{}`
+
+`trigger_characters` for each filetypes.
+
+```lua
+{
+  c = { ".", "->" },
+  perl = { "->", "::" },
+}
+```
+
+It fallbacks to `trigger_characters` if the filetype of the current buffer is not defined.

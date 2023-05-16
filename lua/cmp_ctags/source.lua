@@ -4,6 +4,7 @@ local Ctags = require "cmp_ctags.ctags"
 local source = {}
 
 local default_config = {
+  executable = "ctags",
   trigger_characters = { "." },
   trigger_characters_ft = {},
 }
@@ -40,7 +41,7 @@ source.new = function()
   local self = setmetatable({}, { __index = source })
   local source_config = config.get_source_config "ctags" or {}
   self.config = vim.tbl_extend("force", default_config, source_config.option or {})
-  self.ctags = Ctags.new(self.config)
+  self.ctags = Ctags.new(self.config.executable)
   return self
 end
 
